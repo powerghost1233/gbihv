@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Música & Audio — Cuentas Premium</title>
+
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;font-family:Segoe UI,system-ui,-apple-system,sans-serif}
+    :root{
+      --bg:#0b0b0b;
+      --panel:#141414;
+      --panel2:#101010;
+      --text:#f1f1f1;
+      --muted:#a9a9a9;
+      --gold:#d4af37;
+      --border:#222;
+      --chip:rgba(255,255,255,.06);
+    }
+    body{background:var(--bg);color:var(--text)}
+    a{color:inherit;text-decoration:none}
+    button{border:0;cursor:pointer}
+    .wrap{max-width:1200px;margin:auto;padding:0 20px}
+
+    header{
+      padding:44px 0 20px;
+      background:linear-gradient(135deg,#111,#1c1c1c);
+      border-bottom:1px solid var(--border);
+    }
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:14px}
+    .brand h1{font-size:1.9rem;line-height:1.1}
+    .brand p{color:var(--muted);margin-top:6px}
+    .actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .chip{
+      background:var(--chip);
+      border:1px solid rgba(212,175,55,.25);
+      padding:9px 12px;
+      border-radius:999px;
+      font-size:.95rem;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .chip:hover{background:rgba(255,255,255,.09)}
+    .cartBtn{
+      background:rgba(212,175,55,.15);
+      border:1px solid rgba(212,175,55,.38);
+    }
+    .cartCount{
+      min-width:22px;
+      height:22px;
+      border-radius:999px;
+      display:inline-grid;
+      place-items:center;
+      background:rgba(212,175,55,.25);
+      border:1px solid rgba(212,175,55,.35);
+      font-size:.85rem;
+      padding:0 6px;
+    }
+
+    main{padding:34px 0 70px}
+    .sectionTitle{
+      display:flex;align-items:end;justify-content:space-between;gap:16px;
+      margin:0 0 18px;
+      padding-left:14px;border-left:4px solid var(--gold);
+    }
+    .sectionTitle h2{font-size:1.55rem}
+    .sectionTitle small{color:var(--muted)}
+
+    .cards{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+      gap:18px;
+    }
+    .card{
+      background:var(--panel);
+      border-radius:16px;
+      padding:18px 16px;
+      border:1px solid rgba(255,255,255,.06);
+      transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+      display:flex;flex-direction:column;gap:12px;
+    }
+    .card:hover{
+      transform:translateY(-4px);
+      box-shadow:0 12px 26px rgba(0,0,0,.55);
+      border-color:rgba(212,175,55,.22);
+    }
+    .logo{
+      width:100%;
+      height:86px;
+      object-fit:contain;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.35));
+    }
+    .name{font-weight:700}
+    .muted{color:var(--muted);font-size:.92rem}
+
+    select{
+      width:100%;
+      padding:10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.25);
+      color:var(--text);
+    }
+    .priceTag{font-weight:800;color:var(--gold)}
+    .add{
+      width:100%;
+      padding:10px 12px;
+      border-radius:12px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      color:var(--text);
+      font-weight:700;
+    }
+
+    footer{
+      border-top:1px solid var(--border);
+      background:var(--panel2);
+      padding:22px 0;
+      color:#777;
+      font-size:.9rem;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <h1>Música & Audio Premium</h1>
+        <p>Categoría: <b>Música</b></p>
+      </div>
+      <div class="actions">
+        <a class="chip" href="index.html">🏠 Inicio</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="sectionTitle">
+      <h2>🎧 Música & Audio</h2>
+      <small>Selecciona tu suscripción</small>
+    </div>
+
+    <div class="cards" id="cards"></div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">© 2026 · Música Premium</div>
+</footer>
+
+<script>
+  const PRODUCTS = [
+    { name:"Spotify",     img:"assets/streaming/spotify.png" },
+    { name:"Apple Music", img:"assets/streaming/apple-music.png" },
+    { name:"Deezer",      img:"assets/streaming/deezer.png" },
+    { name:"Tidal",       img:"assets/streaming/tidal.png" },
+    { name:"Qobuz",       img:"assets/streaming/qobuz.png" },
+    { name:"Audible",     img:"assets/streaming/audible.png" },
+    { name:"Storytel",    img:"assets/streaming/storytel.png" }
+  ];
+
+  const PLANS = [
+    { label:"1 mes — Premium", price:"6,99 €" },
+    { label:"3 meses — Premium", price:"18,99 €" },
+    { label:"12 meses — Premium", price:"59,99 €" }
+  ];
+
+  const cards = document.getElementById("cards");
+
+  cards.innerHTML = PRODUCTS.map(p => `
+    <article class="card">
+      <img class="logo" src="${p.img}" alt="${p.name}">
+      <div class="name">${p.name}</div>
+
+      <select>
+        ${PLANS.map(pl => `<option>${pl.label} — ${pl.price}</option>`).join("")}
+      </select>
+
+      <div class="priceTag">${PLANS[0].price}</div>
+      <button class="add">Añadir al carrito</button>
+    </article>
+  `).join("");
+</script>
+
+</body>
+</html>

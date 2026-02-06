@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Streaming & Cuentas Premium</title>
+
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;font-family:Segoe UI,system-ui,-apple-system,sans-serif}
+    :root{
+      --bg:#0b0b0b;
+      --panel:#141414;
+      --panel2:#101010;
+      --text:#f1f1f1;
+      --muted:#a9a9a9;
+      --gold:#d4af37;
+      --border:#222;
+    }
+    body{background:var(--bg);color:var(--text)}
+    a{color:inherit;text-decoration:none}
+
+    header{
+      padding:56px 20px 32px;
+      text-align:center;
+      background:linear-gradient(135deg,#111,#1c1c1c);
+      border-bottom:1px solid var(--border);
+    }
+    header h1{font-size:2.6rem;line-height:1.1;margin-bottom:10px}
+    header p{color:var(--muted);font-size:1.05rem}
+
+    .nav{
+      max-width:1200px;
+      margin:18px auto 0;
+      padding:0 20px;
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+    .chip{
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(212,175,55,.25);
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:.95rem;
+    }
+    .chip:hover{background:rgba(255,255,255,.08)}
+
+    main{max-width:1200px;margin:auto;padding:44px 20px 60px}
+    .category{margin-bottom:64px}
+    .category h2{
+      margin-bottom:22px;
+      padding-left:14px;
+      border-left:4px solid var(--gold);
+      font-size:1.65rem;
+    }
+
+    .cards{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+      gap:22px;
+    }
+    .card{
+      background:var(--panel);
+      border-radius:16px;
+      padding:22px 16px;
+      text-align:center;
+      transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+      border:1px solid rgba(255,255,255,.06);
+      cursor:pointer;
+    }
+    .card:hover{
+      transform:translateY(-6px);
+      box-shadow:0 12px 28px rgba(0,0,0,.6);
+      border-color:rgba(212,175,55,.22);
+    }
+    .card img{
+      width:100%;
+      max-width:125px;
+      height:82px;
+      object-fit:contain;
+      margin:0 auto 12px;
+      display:block;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.35));
+    }
+    .card h3{font-size:1rem;font-weight:600;color:#eee}
+
+    footer{
+      border-top:1px solid var(--border);
+      background:var(--panel2);
+      padding:26px 20px;
+      text-align:center;
+      color:#777;
+      font-size:.9rem;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Streaming & Cuentas Premium</h1>
+    <p>Catálogo visual · listo para GitHub Pages</p>
+
+    <nav class="nav" aria-label="Navegación">
+      <a class="chip" href="#streaming">🎬 Streaming</a>
+      <a class="chip" href="#musica">🎧 Música & Audio</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- STREAMING -->
+    <section class="category" id="streaming">
+      <h2>🎬 Streaming</h2>
+
+      <div class="cards">
+        <div class="card"><img src="assets/streaming/netflix.png" alt="Netflix"><h3>Netflix</h3></div>
+        <div class="card"><img src="assets/streaming/hbo-max.png" alt="HBO Max"><h3>HBO Max</h3></div>
+        <div class="card"><img src="assets/streaming/disney-plus.png" alt="Disney+"><h3>Disney+</h3></div>
+        <div class="card"><img src="assets/streaming/prime-video.png" alt="Prime Video"><h3>Prime Video</h3></div>
+        <div class="card"><img src="assets/streaming/apple-tv-plus.png" alt="Apple TV+"><h3>Apple TV+</h3></div>
+        <div class="card"><img src="assets/streaming/skyshowtime.png" alt="SkyShowtime"><h3>SkyShowtime</h3></div>
+        <div class="card"><img src="assets/streaming/movistar-plus.png" alt="Movistar Plus+"><h3>Movistar Plus+</h3></div>
+        <div class="card"><img src="assets/streaming/atresplayer.png" alt="Atresplayer"><h3>Atresplayer</h3></div>
+        <div class="card"><img src="assets/streaming/mediaset-infinity.png" alt="Mediaset"><h3>Mediaset</h3></div>
+        <div class="card"><img src="assets/streaming/orange-tv.png" alt="Orange TV"><h3>Orange TV</h3></div>
+        <div class="card"><img src="assets/streaming/plex.png" alt="Plex"><h3>Plex</h3></div>
+        <div class="card"><img src="assets/streaming/filmin.png" alt="Filmin"><h3>Filmin</h3></div>
+        <div class="card"><img src="assets/streaming/viki-rakuten.png" alt="Rakuten Viki"><h3>Rakuten Viki</h3></div>
+      </div>
+    </section>
+
+    <!-- MÚSICA & AUDIO -->
+    <section class="category" id="musica">
+      <h2>🎧 Música & Audio</h2>
+
+      <div class="cards">
+        <div class="card"><img src="assets/streaming/spotify.png" alt="Spotify"><h3>Spotify</h3></div>
+        <div class="card"><img src="assets/streaming/apple-music.png" alt="Apple Music"><h3>Apple Music</h3></div>
+        <div class="card"><img src="assets/streaming/deezer.png" alt="Deezer"><h3>Deezer</h3></div>
+        <div class="card"><img src="assets/streaming/tidal.png" alt="Tidal"><h3>Tidal</h3></div>
+        <div class="card"><img src="assets/streaming/qobuz.png" alt="Qobuz"><h3>Qobuz</h3></div>
+        <div class="card"><img src="assets/streaming/audible.png" alt="Audible"><h3>Audible</h3></div>
+        <div class="card"><img src="assets/streaming/storytel.png" alt="Storytel"><h3>Storytel</h3></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 · Streaming Premium · Hecho para despliegue en GitHub Pages
+  </footer>
+</body>
+</html>

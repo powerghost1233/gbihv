@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Streaming — Cuentas Premium</title>
+
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;font-family:Segoe UI,system-ui,-apple-system,sans-serif}
+    :root{
+      --bg:#0b0b0b;
+      --panel:#141414;
+      --panel2:#101010;
+      --text:#f1f1f1;
+      --muted:#a9a9a9;
+      --gold:#d4af37;
+      --border:#222;
+      --chip:rgba(255,255,255,.06);
+    }
+    body{background:var(--bg);color:var(--text)}
+    a{color:inherit;text-decoration:none}
+    button{border:0;cursor:pointer}
+    .wrap{max-width:1200px;margin:auto;padding:0 20px}
+
+    header{
+      padding:44px 0 20px;
+      background:linear-gradient(135deg,#111,#1c1c1c);
+      border-bottom:1px solid var(--border);
+    }
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:14px}
+    .brand h1{font-size:1.9rem;line-height:1.1}
+    .brand p{color:var(--muted);margin-top:6px}
+    .actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .chip{
+      background:var(--chip);
+      border:1px solid rgba(212,175,55,.25);
+      padding:9px 12px;
+      border-radius:999px;
+      font-size:.95rem;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .chip:hover{background:rgba(255,255,255,.09)}
+    .cartBtn{
+      background:rgba(212,175,55,.15);
+      border:1px solid rgba(212,175,55,.38);
+    }
+    .cartCount{
+      min-width:22px;
+      height:22px;
+      border-radius:999px;
+      display:inline-grid;
+      place-items:center;
+      background:rgba(212,175,55,.25);
+      border:1px solid rgba(212,175,55,.35);
+      font-size:.85rem;
+      padding:0 6px;
+    }
+
+    main{padding:34px 0 70px}
+    .sectionTitle{
+      display:flex;align-items:end;justify-content:space-between;gap:16px;
+      margin:0 0 18px;
+      padding-left:14px;border-left:4px solid var(--gold);
+    }
+    .sectionTitle h2{font-size:1.55rem}
+    .sectionTitle small{color:var(--muted)}
+
+    .cards{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+      gap:18px;
+    }
+    .card{
+      background:var(--panel);
+      border-radius:16px;
+      padding:18px 16px;
+      border:1px solid rgba(255,255,255,.06);
+      transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+      display:flex;flex-direction:column;gap:12px;
+    }
+    .card:hover{
+      transform:translateY(-4px);
+      box-shadow:0 12px 26px rgba(0,0,0,.55);
+      border-color:rgba(212,175,55,.22);
+    }
+    .logo{
+      width:100%;
+      height:86px;
+      object-fit:contain;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.35));
+    }
+    .name{font-weight:700}
+    .muted{color:var(--muted);font-size:.92rem}
+
+    .row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    select{
+      width:100%;
+      padding:10px 10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.25);
+      color:var(--text);
+      outline:none;
+    }
+    option{background:#111;color:#fff}
+    .priceTag{
+      font-weight:800;
+      color:var(--gold);
+      letter-spacing:.2px;
+    }
+    .add{
+      width:100%;
+      padding:10px 12px;
+      border-radius:12px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      color:var(--text);
+      font-weight:700;
+    }
+    .add:hover{background:rgba(255,255,255,.11)}
+    .add:active{transform:translateY(1px)}
+
+    /* Drawer carrito */
+    .overlay{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,.55);
+      opacity:0;pointer-events:none;
+      transition:opacity .2s ease;
+    }
+    .overlay.show{opacity:1;pointer-events:auto}
+    .drawer{
+      position:fixed;top:0;right:0;height:100%;
+      width:min(440px,92vw);
+      background:linear-gradient(180deg,#121212,#0f0f0f);
+      border-left:1px solid rgba(255,255,255,.08);
+      transform:translateX(100%);
+      transition:transform .22s ease;
+      display:flex;flex-direction:column;
+    }
+    .drawer.show{transform:translateX(0)}
+    .drawerHead{
+      padding:18px 16px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+    }
+    .drawerHead h3{font-size:1.1rem}
+    .close{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      color:#fff;
+      padding:8px 10px;
+      border-radius:12px;
+    }
+    .drawerBody{padding:14px 16px;overflow:auto;flex:1;display:flex;flex-direction:column;gap:12px}
+    .item{
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:14px;
+      padding:12px;
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:10px;
+    }
+    .item b{display:block;margin-bottom:2px}
+    .item small{color:var(--muted)}
+    .qty{
+      display:flex;align-items:center;gap:8px;justify-content:flex-end;
+    }
+    .qty button{
+      width:34px;height:34px;border-radius:10px;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      color:#fff;
+      font-weight:900;
+    }
+    .qty span{min-width:18px;text-align:center}
+    .trash{
+      margin-left:8px;
+      background:rgba(255,70,70,.12);
+      border:1px solid rgba(255,70,70,.25);
+    }
+    .drawerFoot{
+      padding:16px;
+      border-top:1px solid rgba(255,255,255,.08);
+      display:flex;flex-direction:column;gap:10px;
+      background:rgba(0,0,0,.25);
+    }
+    .totalLine{display:flex;align-items:center;justify-content:space-between}
+    .pay{
+      padding:12px 14px;
+      border-radius:14px;
+      background:rgba(212,175,55,.18);
+      border:1px solid rgba(212,175,55,.35);
+      color:#fff;
+      font-weight:900;
+    }
+    .pay:hover{background:rgba(212,175,55,.24)}
+    .clear{
+      padding:10px 12px;
+      border-radius:14px;
+      background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.10);
+      color:#fff;
+      font-weight:700;
+    }
+    footer{
+      border-top:1px solid var(--border);
+      background:var(--panel2);
+      padding:22px 0;
+      color:#777;
+      font-size:.9rem;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <h1>Streaming & Cuentas Premium</h1>
+        <p>Categoría: <b>Streaming</b> · Carrito + Stripe (Vercel)</p>
+      </div>
+
+      <div class="actions">
+        <a class="chip" href="index.html">🏠 Inicio</a>
+        <button class="chip cartBtn" id="openCartBtn" type="button">
+          🛒 Carrito <span class="cartCount" id="cartCount">0</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="sectionTitle">
+      <h2>🎬 Streaming</h2>
+      <small>Elige plan → añade → paga</small>
+    </div>
+
+    <div class="cards" id="cards"></div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">© 2026 · Streaming Premium · Listo para GitHub Pages + Vercel</div>
+</footer>
+
+<!-- Drawer carrito -->
+<div class="overlay" id="overlay"></div>
+
+<aside class="drawer" id="drawer" aria-label="Carrito">
+  <div class="drawerHead">
+    <h3>🛒 Tu carrito</h3>
+    <button class="close" id="closeCartBtn" type="button">Cerrar ✕</button>
+  </div>
+
+  <div class="drawerBody" id="cartItems"></div>
+
+  <div class="drawerFoot">
+    <div class="totalLine">
+      <span>Total</span>
+      <strong id="total">0,00 €</strong>
+    </div>
+    <button class="pay" id="payBtn" type="button">💳 Pagar con Stripe</button>
+    <button class="clear" id="clearBtn" type="button">Vaciar carrito</button>
+    <small class="muted">Tras el pago, el pedido se procesará (y podrás notificarlo por Telegram desde el backend).</small>
+  </div>
+</aside>
+
+<script>
+  // =========================
+  // CONFIG STREAMING
+  // =========================
+  const CATEGORY = { id:"streaming", name:"Streaming", title:"🎬 Streaming" };
+
+  // OJO: estas rutas son los placeholders que ya venías usando en tu index.html
+  const PRODUCTS = [
+    { id:"netflix",         name:"Netflix",         img:"assets/streaming/netflix.png" },
+    { id:"hbo-max",         name:"HBO Max",         img:"assets/streaming/hbo-max.png" },
+    { id:"disney-plus",     name:"Disney+",         img:"assets/streaming/disney-plus.png" },
+    { id:"prime-video",     name:"Prime Video",     img:"assets/streaming/prime-video.png" },
+    { id:"apple-tv-plus",   name:"Apple TV+",       img:"assets/streaming/apple-tv-plus.png" },
+    { id:"skyshowtime",     name:"SkyShowtime",     img:"assets/streaming/skyshowtime.png" },
+    { id:"movistar-plus",   name:"Movistar Plus+",  img:"assets/streaming/movistar-plus.png" },
+    { id:"atresplayer",     name:"Atresplayer",     img:"assets/streaming/atresplayer.png" },
+    { id:"mediaset",        name:"Mediaset",        img:"assets/streaming/mediaset-infinity.png" },
+    { id:"orange-tv",       name:"Orange TV",       img:"assets/streaming/orange-tv.png" },
+    { id:"plex",            name:"Plex",            img:"assets/streaming/plex.png" },
+    { id:"filmin",          name:"Filmin",          img:"assets/streaming/filmin.png" },
+    { id:"rakuten-viki",    name:"Rakuten Viki",    img:"assets/streaming/viki-rakuten.png" }
+  ].map(p => ({
+    ...p,
+    variants: [
+      { label: "1 mes — Perfil",  price: 6.99 },
+      { label: "3 meses — Perfil", price: 18.99 },
+      { label: "12 meses — Perfil", price: 59.99 }
+    ]
+  }));
+
+  // =========================
+  // CARRITO (localStorage)
+  // =========================
+  const STORAGE_KEY = "premium_cart_v1";
+  const eur = new Intl.NumberFormat("es-ES", { style:"currency", currency:"EUR" });
+
+  function loadCart(){
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
+    catch { return []; }
+  }
+  function saveCart(cart){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
+    updateCartUI();
+  }
+  function cartCount(cart){ return cart.reduce((a,i)=>a+i.qty,0); }
+  function cartTotal(cart){ return cart.reduce((a,i)=>a+(i.unitPrice*i.qty),0); }
+
+  // =========================
+  // RENDER TARJETAS
+  // =========================
+  const cardsEl = document.getElementById("cards");
+
+  function renderCards(){
+    cardsEl.innerHTML = PRODUCTS.map((p) => {
+      const opts = p.variants.map((v,i)=>`<option value="${i}">${v.label} — ${eur.format(v.price)}</option>`).join("");
+      const firstPrice = p.variants[0]?.price ?? 0;
+
+      return `
+        <article class="card" data-id="${p.id}">
+          <img class="logo" src="${p.img}" alt="${p.name}">
+          <div>
+            <div class="name">${p.name}</div>
+            <div class="muted">Elige una opción</div>
+          </div>
+
+          <select aria-label="Opciones" data-select="${p.id}">
+            ${opts}
+          </select>
+
+          <div class="row">
+            <span class="priceTag" id="price-${p.id}">${eur.format(firstPrice)}</span>
+          </div>
+
+          <button class="add" type="button" data-add="${p.id}">Añadir al carrito</button>
+        </article>
+      `;
+    }).join("");
+
+    PRODUCTS.forEach(p=>{
+      const sel = document.querySelector(`[data-select="${p.id}"]`);
+      sel?.addEventListener("change", () => {
+        const v = p.variants[Number(sel.value)];
+        document.getElementById(`price-${p.id}`).textContent = eur.format(v.price);
+      });
+    });
+
+    document.querySelectorAll("[data-add]").forEach(btn=>{
+      btn.addEventListener("click", () => addToCart(btn.getAttribute("data-add")));
+    });
+  }
+
+  function addToCart(productId){
+    const p = PRODUCTS.find(x=>x.id===productId);
+    const sel = document.querySelector(`[data-select="${productId}"]`);
+    const vIdx = Number(sel?.value ?? 0);
+    const v = p.variants[vIdx];
+
+    const cart = loadCart();
+    const key = `${CATEGORY.id}:${p.id}:${vIdx}`;
+
+    const existing = cart.find(i=>i.key===key);
+    if(existing){
+      existing.qty += 1;
+    } else {
+      cart.push({
+        key,
+        category: CATEGORY.name,
+        productId: p.id,
+        name: p.name,
+        variantIndex: vIdx,
+        variantLabel: v.label,
+        unitPrice: v.price,
+        qty: 1
+      });
+    }
+    saveCart(cart);
+    openCart();
+  }
+
+  // =========================
+  // DRAWER UI
+  // =========================
+  const overlay = document.getElementById("overlay");
+  const drawer = document.getElementById("drawer");
+  const cartItemsEl = document.getElementById("cartItems");
+  const cartCountEl = document.getElementById("cartCount");
+  const totalEl = document.getElementById("total");
+
+  function openCart(){
+    overlay.classList.add("show");
+    drawer.classList.add("show");
+  }
+  function closeCart(){
+    overlay.classList.remove("show");
+    drawer.classList.remove("show");
+  }
+
+  document.getElementById("openCartBtn").addEventListener("click", openCart);
+  document.getElementById("closeCartBtn").addEventListener("click", closeCart);
+  overlay.addEventListener("click", closeCart);
+
+  function updateCartUI(){
+    const cart = loadCart();
+    cartCountEl.textContent = cartCount(cart);
+    totalEl.textContent = eur.format(cartTotal(cart));
+
+    if(cart.length===0){
+      cartItemsEl.innerHTML = `<div class="muted">Carrito vacío.</div>`;
+      return;
+    }
+
+    cartItemsEl.innerHTML = cart.map((i, idx)=>`
+      <div class="item">
+        <div>
+          <b>${i.name}</b>
+          <small>${i.category} · ${i.variantLabel}</small><br>
+          <small>${eur.format(i.unitPrice)} / ud</small>
+        </div>
+        <div class="qty">
+          <button type="button" data-dec="${idx}">−</button>
+          <span>${i.qty}</span>
+          <button type="button" data-inc="${idx}">+</button>
+          <button class="trash" type="button" data-del="${idx}">🗑</button>
+        </div>
+      </div>
+    `).join("");
+
+    cartItemsEl.querySelectorAll("[data-inc]").forEach(b=>{
+      b.addEventListener("click", ()=>changeQty(Number(b.dataset.inc), +1));
+    });
+    cartItemsEl.querySelectorAll("[data-dec]").forEach(b=>{
+      b.addEventListener("click", ()=>changeQty(Number(b.dataset.dec), -1));
+    });
+    cartItemsEl.querySelectorAll("[data-del]").forEach(b=>{
+      b.addEventListener("click", ()=>removeItem(Number(b.dataset.del)));
+    });
+  }
+
+  function changeQty(index, delta){
+    const cart = loadCart();
+    if(!cart[index]) return;
+    cart[index].qty += delta;
+    if(cart[index].qty <= 0) cart.splice(index,1);
+    saveCart(cart);
+  }
+  function removeItem(index){
+    const cart = loadCart();
+    cart.splice(index,1);
+    saveCart(cart);
+  }
+
+  document.getElementById("clearBtn").addEventListener("click", ()=>{
+    localStorage.removeItem(STORAGE_KEY);
+    updateCartUI();
+  });
+
+  // =========================
+  // STRIPE CHECKOUT (Vercel API)
+  // =========================
+  document.getElementById("payBtn").addEventListener("click", async ()=>{
+    const cart = loadCart();
+    if(cart.length===0) return alert("Carrito vacío.");
+
+    try{
+      const r = await fetch("/api/create-checkout-session", {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({
+          currency: "eur",
+          items: cart.map(i=>({
+            name: i.name,
+            variantLabel: i.variantLabel,
+            unitPrice: i.unitPrice,
+            qty: i.qty
+          }))
+        })
+      });
+      const data = await r.json();
+      if(!r.ok) throw new Error(data.error || "Error creando sesión");
+      window.location.href = data.url;
+    }catch(e){
+      alert("Error: " + e.message);
+    }
+  });
+
+  // INIT
+  renderCards();
+  updateCartUI();
+
+  // Vacía carrito si vuelve de Stripe con success=1
+  const urlParams = new URLSearchParams(location.search);
+  if(urlParams.get("success")==="1"){
+    localStorage.removeItem(STORAGE_KEY);
+    updateCartUI();
+  }
+</script>
+
+</body>
+</html>
